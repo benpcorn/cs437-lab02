@@ -2,7 +2,7 @@ import socket
 import time
 import datetime
 import json
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from sys import platform
 
 if platform == "linux" or platform == "linux2":
@@ -26,52 +26,82 @@ motor = Motor()
 HOST = "192.168.3.49" # IP address of your Raspberry PI
 PORT = 65432          # Port to listen on (non-privileged ports are > 1023)
 
-@app.route('/api/')
-def index():
-    return get_stats()
-
-@app.route('/api/v1/stop', methods=['POST'])
 def stop():
     print('Stop')
     motor.setMotorModel(0,0,0,0)
-    return get_stats()
 
-@app.route('/api/v1/forward', methods=['POST'])
 def forward():
     print('Forward')
     motor.setMotorModel(-1000,-1000,-1000,-1000)
     time.sleep(.1)
     stop()
-    return get_stats()
 
-@app.route('/api/v1/backward', methods=['POST'])
 def backward():
     print('Backward')
     motor.setMotorModel(1000,1000,1000,1000)
     time.sleep(.1)
     stop()
-    return get_stats()
 
-@app.route('/api/v1/left', methods=['POST'])
 def left():
     print('Turn left')
     motor.setMotorModel(500,500,-2000,-2000)
     time.sleep(.1)
     stop()
-    return get_stats()
 
-@app.route('/api/v1/right', methods=['POST'])
 def right():
     print('Turn right')
     motor.setMotorModel(-2000,-2000,500,500)
     time.sleep(.1)
     stop()
-    return get_stats()
 
-@app.route('/api/v1/stats', methods=['GET'])
+def get_us_dist():
+    return 5
+
+def get_temperature():
+    return 33.5
+
+def get_heading():
+    return 'N'
+
+def get_last_direction():
+    return 'Left'
+
+@app.route('/api/v1/vitals', methods=['GET'])
 def get_stats():
     # [battery, us_distance, traveled_dist, moving_direction]
-    stats = [5, 10, 15, 20]
+    stats = [get_us_dist(), get_temperature(), get_heading(), get_last_direction()]
     return jsonify(stats)
 
+@app.route('/api/v1/move', methods=['POST'])
+def move():
+    response = {}
+    request_data = request.get_json()
+
+    if request_data is None or 'direction' not in request_data:
+        return {"code": 400, "message": "Direction not provided."} 
+
+    direction = request_data['direction']
+
+    if direction == "left":
+        left()
+        response = {"code": 200, "message": "Turning left"}
+    elif direction == "right":
+        right()
+        response = {"code": 200, "message": "Turning right"}
+    elif direction == "forward":
+        forward()
+        response = {"code": 200, "message": "Moving forward"}
+    elif direction == "backward":
+        backward()
+        response = {"code": 200, "message": "Moving backward"}
+    elif direction == "stop":
+        stop()
+        response = {"code": 200, "message": "Stopping"}
+    else:
+        stop()
+        response = {"code": 400, "message": "Unknown direction. Stopping car."}
+
+    return jsonify(response)
+
+#Run
 app.run()
