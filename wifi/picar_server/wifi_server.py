@@ -68,8 +68,12 @@ def get_last_direction():
 
 @app.route('/api/v1/vitals', methods=['GET'])
 def get_stats():
-    # [battery, us_distance, traveled_dist, moving_direction]
-    stats = [get_us_dist(), get_temperature(), get_heading(), get_last_direction()]
+    stats = {
+        "us_dist": get_us_dist(), 
+        "temp": get_temperature(), 
+        "heading": get_heading(), 
+        "direction": get_last_direction()
+    }
     return jsonify(stats)
 
 @app.route('/api/v1/move', methods=['POST'])
