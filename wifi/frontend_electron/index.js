@@ -1,7 +1,7 @@
 document.onkeydown = updateKey;
 document.onkeyup = resetKey;
 
-var flask_addr = "http://127.0.0.1:5000"
+var flask_addr = "http://192.168.4.160:5000"
 
 function updateKey(e) {
 
@@ -62,10 +62,10 @@ function getVehicleVitals(){
     axios.get(flask_addr + '/api/v1/vitals')
     .then(function (response) {
         console.log(response);
-        document.getElementById("direction").innerText = response["data"]["direction"];
+        document.getElementById("servo1").innerText = response["data"]["servo1_angle"];
         document.getElementById("temperature").innerText = response["data"]["temp"];
         document.getElementById("us_dist").innerText = response["data"]["us_dist"];
-        document.getElementById("heading").innerText = response["data"]["heading"];
+        document.getElementById("servo_0").innerText = response["data"]["servo0_angle"];
     })
     .catch(function (error) {
         console.log(error);

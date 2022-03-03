@@ -1,9 +1,13 @@
+import re
 import socket
 import time
 import datetime
 import json
 from flask import Flask, jsonify, request
 from sys import platform
+from gpiozero import CPUTemperature
+from Ultrasonic import *
+from servo import *
 
 if platform == "linux" or platform == "linux2":
     from Motor import *
@@ -22,9 +26,21 @@ app.config["DEBUG"] = True
 last_send = ''
 
 motor = Motor()
+cpu = CPUTemperature()
+us = Ultrasonic()
+servo = Servo()
+
+last_angle_s0 = 0
+last_angle_s1 = 0
 
 HOST = "192.168.3.49" # IP address of your Raspberry PI
 PORT = 65432          # Port to listen on (non-privileged ports are > 1023)
+
+def init_servos():
+    servo.setServoPwm('0',90)
+    servo.setServoPwm('1',90)
+    last_angle_s1 = 90
+    last_angle_s0 = 90
 
 def stop():
     print('Stop')
@@ -55,26 +71,50 @@ def right():
     stop()
 
 def get_us_dist():
-    return 5
+    try:
+        return us.get_distance()
+    except:
+        0
 
 def get_temperature():
-    return 33.5
+    try:
+        return cpu.temperature
+    except:
+        return 0
 
-def get_heading():
-    return 'N'
+def get_servo1_angle():
+    last_angle_s1
 
-def get_last_direction():
-    return 'Left'
+def get_servo0_angle():
+    last_angle_s1
 
 @app.route('/api/v1/vitals', methods=['GET'])
 def get_stats():
     stats = {
         "us_dist": get_us_dist(), 
         "temp": get_temperature(), 
-        "heading": get_heading(), 
-        "direction": get_last_direction()
+        "servo1_angle": get_servo1_angle(), 
+        "servo0_angle": get_servo0_angle()
     }
     return jsonify(stats)
+
+@app.route('/api/v1/servo', methods=['POST'])
+def set_servo():
+    response = {}
+    request_data = request.get_json()
+
+    if request_data is None or ('angle' not in request_data and 'servo' not in request_data):
+        return {"code": 400, "message": "servo and angle must be provided in request."} 
+
+    servo = request_data['servo']
+    angle = int(request_data['angle'])
+
+    if servo == 1:
+        servo.setServoPwm('1', angle)
+        last_angle_s1 = angle
+    elif servo == 0:
+        servo.setServoPwm('0', angle)
+        last_angle_s0 = angle
 
 @app.route('/api/v1/move', methods=['POST'])
 def move():
@@ -107,5 +147,6 @@ def move():
 
     return jsonify(response)
 
-#Run
-app.run()
+# Run
+app.run(debug=True, port=5000, host='0.0.0.0')
+init_servos()
