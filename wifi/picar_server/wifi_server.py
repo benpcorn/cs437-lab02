@@ -83,10 +83,10 @@ def get_temperature():
         return 0
 
 def get_servo1_angle():
-    last_angle_s1
+    return last_angle_s1
 
 def get_servo0_angle():
-    last_angle_s1
+    return last_angle_s0
 
 @app.route('/api/v1/vitals', methods=['GET'])
 def get_stats():
