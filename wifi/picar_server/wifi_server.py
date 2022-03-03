@@ -106,13 +106,13 @@ def set_servo():
     if request_data is None or ('angle' not in request_data and 'servo' not in request_data):
         return {"code": 400, "message": "servo and angle must be provided in request."} 
 
-    servo = request_data['servo']
+    servo_id = request_data['servo']
     angle = int(request_data['angle'])
 
-    if servo == 1:
+    if servo_id == 1:
         servo.setServoPwm('1', angle)
         last_angle_s1 = angle
-    elif servo == 0:
+    elif servo_id == 0:
         servo.setServoPwm('0', angle)
         last_angle_s0 = angle
 

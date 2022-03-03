@@ -65,7 +65,7 @@ function getVehicleVitals(){
         document.getElementById("servo1").innerText = response["data"]["servo1_angle"];
         document.getElementById("temperature").innerText = response["data"]["temp"];
         document.getElementById("us_dist").innerText = response["data"]["us_dist"];
-        document.getElementById("servo_0").innerText = response["data"]["servo0_angle"];
+        document.getElementById("servo0").innerText = response["data"]["servo0_angle"];
     })
     .catch(function (error) {
         console.log(error);
