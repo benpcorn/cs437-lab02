@@ -116,6 +116,8 @@ def set_servo():
         servo.setServoPwm('0', angle)
         last_angle_s0 = angle
 
+    return {"code": 200, "message": "Servo angle set"}
+
 @app.route('/api/v1/move', methods=['POST'])
 def move():
     response = {}
