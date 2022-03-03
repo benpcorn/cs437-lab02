@@ -1,6 +1,10 @@
 document.onkeydown = updateKey;
 document.onkeyup = resetKey;
 
+var servo0_angle_slider = document.getElementById("servo0_angle_input");
+var servo1_angle_input = document.getElementById("servo1_angle_input");
+
+
 var flask_addr = "http://192.168.4.160:5000"
 
 function updateKey(e) {
@@ -58,6 +62,19 @@ function postMoveRequest(direction){
       });
 }
 
+function postServoRequest(servo, angle){
+    axios.post(flask_addr + '/api/v1/servo', {
+        servo: servo,
+        angle: angle
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
+
 function getVehicleVitals(){
     axios.get(flask_addr + '/api/v1/vitals')
     .then(function (response) {
@@ -76,3 +93,11 @@ var intervalId = window.setInterval(function(){
     console.log('GET: Vehicle Vitals')
     getVehicleVitals()
   }, 5000);
+
+  servo0_angle_slider.oninput = function() {
+    postServoRequest(0, servo0_angle_slider.value)
+  }
+
+  servo1_angle_slider.oninput = function() {
+    postServoRequest(1, servo1_angle_slider.value)
+  }
