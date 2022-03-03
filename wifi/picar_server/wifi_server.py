@@ -33,12 +33,11 @@ servo = Servo()
 last_angle_s0 = 0
 last_angle_s1 = 0
 
-HOST = "192.168.3.49" # IP address of your Raspberry PI
-PORT = 65432          # Port to listen on (non-privileged ports are > 1023)
-
 def init_servos():
     servo.setServoPwm('0',90)
     servo.setServoPwm('1',90)
+    global last_angle_s0
+    global last_angle_s1
     last_angle_s1 = 90
     last_angle_s0 = 90
 
@@ -103,6 +102,9 @@ def set_servo():
     response = {}
     request_data = request.get_json()
 
+    global last_angle_s0
+    global last_angle_s1
+    
     if request_data is None or ('angle' not in request_data and 'servo' not in request_data):
         return {"code": 400, "message": "servo and angle must be provided in request."} 
 
