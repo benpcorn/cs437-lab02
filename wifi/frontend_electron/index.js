@@ -27,6 +27,10 @@ function updateKey(e) {
         document.getElementById("rightArrow").style.color = "green";
         postMoveRequest("right");
     }
+    else if (e.keyCode == '32') {
+        // stop (space)
+        postMoveRequest("stop");
+    }
 }
 
 function resetKey(e) {

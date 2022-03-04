@@ -9,6 +9,8 @@ from gpiozero import CPUTemperature
 from Ultrasonic import *
 from servo import *
 
+mode = 'space_to_stop'
+
 if platform == "linux" or platform == "linux2":
     from Motor import *
 else:
@@ -50,25 +52,29 @@ def forward():
     print('Forward')
     motor.setMotorModel(-1000,-1000,-1000,-1000)
     time.sleep(.5)
-    stop()
+    if mode == 'normal':
+        stop()
 
 def backward():
     print('Backward')
     motor.setMotorModel(1000,1000,1000,1000)
     time.sleep(.5)
-    stop()
+    if mode == 'normal':
+        stop()
 
 def left():
     print('Turn left')
     motor.setMotorModel(500,500,-2000,-2000)
     time.sleep(.5)
-    stop()
+    if mode == 'normal':
+        stop()
 
 def right():
     print('Turn right')
     motor.setMotorModel(-2000,-2000,500,500)
     time.sleep(.5)
-    stop()
+    if mode == 'normal':
+        stop()
 
 def get_us_dist():
     try:
