@@ -64,14 +64,14 @@ def backward():
 
 def left():
     print('Turn left')
-    motor.setMotorModel(500,500,-2000,-2000)
+    motor.setMotorModel(-2000,-2000,-2000,-2000)
     time.sleep(.5)
     if mode == 'normal':
         stop()
 
 def right():
     print('Turn right')
-    motor.setMotorModel(-2000,-2000,500,500)
+    motor.setMotorModel(-2000,-2000,2000,2000)
     time.sleep(.5)
     if mode == 'normal':
         stop()

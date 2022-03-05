@@ -36,7 +36,7 @@ function updateKey(e) {
 function resetKey(e) {
 
     e = e || window.event;
-
+    postMoveRequest("stop");
     document.getElementById("upArrow").style.color = "grey";
     document.getElementById("downArrow").style.color = "grey";
     document.getElementById("leftArrow").style.color = "grey";
