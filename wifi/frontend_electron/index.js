@@ -3,9 +3,17 @@ document.onkeyup = resetKey;
 
 var flask_addr = "http://192.168.4.160:5000"
 
+keyDown = false;
+
 function updateKey(e) {
 
     e = e || window.event;
+
+    if (keyDown == true) {
+        return
+    }
+
+    keyDown = true;
 
     if (e.keyCode == '87') {
         // up (w)
@@ -34,7 +42,7 @@ function updateKey(e) {
 }
 
 function resetKey(e) {
-
+    keyDown = false
     e = e || window.event;
     postMoveRequest("stop");
     document.getElementById("upArrow").style.color = "grey";
